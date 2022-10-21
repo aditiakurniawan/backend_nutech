@@ -6,7 +6,7 @@ import (
 	"nutech/database"
 	"nutech/pkg/mysql"
 	"nutech/routes"
-
+	"os"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
@@ -33,6 +33,7 @@ func main() {
 
 	r.PathPrefix("/uploads").Handler(http.StripPrefix("/uploads/", http.FileServer(http.Dir("./uploads"))))
 
-	fmt.Println("server running localhost:5000")
-	http.ListenAndServe("localhost:5000", handlers.CORS(AllowedHeaders, AllowedMethods, AllowedOrigins)(r))
+	var port = os.Getenv("PORT")
+	fmt.Println("server running localhost:"+port)
+	http.ListenAndServe(":"+port, handlers.CORS(AllowedHeaders, AllowedMethods, AllowedOrigins)(r))
 }
