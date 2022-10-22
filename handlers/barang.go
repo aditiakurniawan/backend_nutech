@@ -158,6 +158,7 @@ func (h *handlerBarang) CreateBarang(w http.ResponseWriter, r *http.Request) {
 		Hargabeli: r.FormValue("hargabeli"),
 		Hargajual: r.FormValue("hargajual"),
 		Stok:      r.FormValue("stok"),
+		User_Id:   userId,
 	}
 
 	validation := validator.New()
@@ -175,6 +176,7 @@ func (h *handlerBarang) CreateBarang(w http.ResponseWriter, r *http.Request) {
 		Hargabeli: request.Hargabeli,
 		Hargajual: request.Hargajual,
 		Stok:      request.Stok,
+		UserID:    request.User_Id,
 	}
 
 	data, err := h.BarangRepository.CreateBarang(barang)
@@ -200,5 +202,6 @@ func convertResponseBarang(u models.Barang) barangdto.BarangResponse {
 		Hargabeli: u.Hargabeli,
 		Hargajual: u.Hargajual,
 		Stok:      u.Stok,
+		User:        u.User,
 	}
 }

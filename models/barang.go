@@ -7,6 +7,8 @@ type Barang struct {
 	Hargabeli string `json:"hargabeli" form:"hargabeli" gorm:"type:varchar(255)"`
 	Hargajual string `json:"hargajual" form:"hargajual" gorm:"type:varchar(255)"`
 	Stok      string `json:"stok" form:"stok" gorm:"type:varchar(255)"`
+	User      User   `json:"user"  gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	UserID    int    `json:"user_id"`
 }
 
 type BarangResponse struct {

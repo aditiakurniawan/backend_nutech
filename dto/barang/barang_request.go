@@ -7,6 +7,7 @@ type BarangRequest struct {
 	Hargabeli string `json:"hargabeli" form:"hargabeli" `
 	Hargajual string `json:"hargajual" form:"hargajual"`
 	Stok      string `json:"stok" form:"stok"`
+	User_Id   int    `json:"user_id"`
 }
 
 type UpdateBarangRequest struct {
