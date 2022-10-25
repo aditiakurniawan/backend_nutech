@@ -12,6 +12,9 @@ import (
 	"nutech/models"
 	"nutech/repositories"
 
+	"context"
+	"github.com/cloudinary/cloudinary-go/v2"
+	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
@@ -150,11 +153,11 @@ func (h *handlerBarang) CreateBarang(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(userId)
 	dataContex := r.Context().Value("dataFile")
-	filename := dataContex.(string)
+	filepath := dataContex.(string)
 
 	request := barangdto.BarangRequest{
 		Nama:      r.FormValue("nama"),
-		Foto:      filename,
+		Foto:      filepath,
 		Hargabeli: r.FormValue("hargabeli"),
 		Hargajual: r.FormValue("hargajual"),
 		Stok:      r.FormValue("stok"),
@@ -169,10 +172,24 @@ func (h *handlerBarang) CreateBarang(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
+	var ctx = context.Background()
+	var CLOUD_NAME = os.Getenv("CLOUD_NAME")
+	var API_KEY = os.Getenv("API_KEY")
+	var API_SECRET = os.Getenv("API_SECRET")
+
+	// Add your Cloudinary credentials ...
+	cld, _ := cloudinary.NewFromParams(CLOUD_NAME, API_KEY, API_SECRET)
+
+	// Upload file to Cloudinary ...
+	resp, err := cld.Upload.Upload(ctx, filepath, uploader.UploadParams{Folder: "nutech"})
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
 	barang := models.Barang{
 		Nama:      request.Nama,
-		Foto:      filename,
+		Foto:      resp.SecureURL,
 		Hargabeli: request.Hargabeli,
 		Hargajual: request.Hargajual,
 		Stok:      request.Stok,
@@ -202,6 +219,6 @@ func convertResponseBarang(u models.Barang) barangdto.BarangResponse {
 		Hargabeli: u.Hargabeli,
 		Hargajual: u.Hargajual,
 		Stok:      u.Stok,
-		User:        u.User,
+		User:      u.User,
 	}
 }
